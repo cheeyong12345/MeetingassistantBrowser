@@ -1,36 +1,54 @@
+# Build dependencies (install first for Python 3.12 + RISC-V compatibility)
+setuptools>=69.0.0
+wheel>=0.42.0
+pip>=24.0
+
 # Core dependencies
-fastapi==0.104.1
-uvicorn[standard]==0.24.0
-python-multipart==0.0.6
-jinja2==3.1.2
-websockets==12.0
+fastapi>=0.104.1,<0.110.0
+uvicorn[standard]>=0.24.0,<0.30.0
+python-multipart>=0.0.6
+jinja2>=3.1.2
+websockets>=12.0
 
 # Audio processing (browser-side capture, server-side processing only)
 # NOTE: PyAudio removed - audio is captured in browser
-pydub==0.25.1
-numpy==1.24.3
-scipy==1.11.3
+pydub>=0.25.1
+
+# NumPy - Python 3.12 requires >= 1.26.0
+# Using flexible versioning for RISC-V wheel availability
+numpy>=1.26.0,<2.0.0
+
+# SciPy - Updated for Python 3.12 compatibility
+scipy>=1.11.4,<2.0.0
 
 # Speech-to-Text engines
-openai-whisper==20231117
-SpeechRecognition==3.10.0
-vosk==0.3.45
+# openai-whisper - using flexible version for RISC-V
+openai-whisper>=20231117
+SpeechRecognition>=3.10.0
+
+# Vosk - May need manual installation on RISC-V if wheel unavailable
+vosk>=0.3.45
 
 # AI/LLM engines
-transformers==4.35.2
-torch==2.1.0
-accelerate==0.24.1
-ollama==0.1.7
+# Using flexible versions for better RISC-V compatibility
+transformers>=4.35.2,<5.0.0
+
+# PyTorch - Note: May need CPU-only version or source build on RISC-V
+# For RISC-V, consider installing from source or using torch-cpu
+torch>=2.1.0,<3.0.0
+
+accelerate>=0.24.1,<1.0.0
+ollama>=0.1.7
 
 # Database and storage
-sqlalchemy==2.0.23
+sqlalchemy>=2.0.23,<3.0.0
 # sqlite3 is built into Python, no need to install
 
 # Utilities
-click==8.1.7
-rich==13.6.0
-python-dotenv==1.0.0
-requests==2.31.0
-aiofiles==23.2.1
-pyyaml==6.0.1
-pydantic==2.5.0
+click>=8.1.7
+rich>=13.6.0
+python-dotenv>=1.0.0
+requests>=2.31.0
+aiofiles>=23.2.1
+pyyaml>=6.0.1
+pydantic>=2.5.0,<3.0.0

@@ -37,9 +37,15 @@ echo ""
 echo "Upgrading pip..."
 pip install --upgrade pip
 
+# Install build dependencies first (critical for Python 3.12 + RISC-V)
+echo ""
+echo "Installing build dependencies for Python 3.12 and RISC-V compatibility..."
+pip install --upgrade setuptools>=69.0.0 wheel>=0.42.0
+
 # Install dependencies
 echo ""
 echo "Installing dependencies..."
+echo "Note: This may take longer on RISC-V architecture as some packages may need to be built from source."
 pip install -r requirements.txt
 
 # Create necessary directories
