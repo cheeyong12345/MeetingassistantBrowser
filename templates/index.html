@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meeting Assistant - Browser Version</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div>
+                <span class="logo">Meeting Assistant</span>
+                <span class="version">{{ version }}</span>
+            </div>
+            <div class="recording-indicator">
+                <span id="recording-status" class="status stopped">Not Recording</span>
+                <span id="connection-status" class="status disconnected">Disconnected</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Error Container -->
+        <div id="error-container" class="error-container">
+            <div id="error-message" class="error-message"></div>
+        </div>
+
+        <!-- Meeting Controls -->
+        <div class="card">
+            <h2 class="card-title">Meeting Controls</h2>
+
+            <div class="form-group">
+                <label class="form-label" for="meeting-title">Meeting Title</label>
+                <input
+                    type="text"
+                    id="meeting-title"
+                    class="form-input"
+                    placeholder="e.g., Team Standup, Project Review"
+                >
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="participants">Participants (comma-separated)</label>
+                <input
+                    type="text"
+                    id="participants"
+                    class="form-input"
+                    placeholder="e.g., John Doe, Jane Smith, Alice Johnson"
+                >
+            </div>
+
+            <div class="btn-group">
+                <button id="start-meeting-btn" class="btn btn-success">
+                    Start Meeting & Record
+                </button>
+                <button id="stop-meeting-btn" class="btn btn-danger" disabled>
+                    Stop Meeting
+                </button>
+            </div>
+
+            <div class="form-group mt-3">
+                <label class="form-label">Audio Level</label>
+                <div id="audio-level-meter" class="audio-level-meter">
+                    <div id="audio-level-bar" class="audio-level-bar" style="width: 0%"></div>
+                </div>
+                <p class="text-small text-muted mt-1">
+                    Microphone activity indicator - speak to see audio levels
+                </p>
+            </div>
+        </div>
+
+        <!-- Grid Layout for Status and Info -->
+        <div class="grid">
+            <!-- System Status -->
+            <div class="card">
+                <h2 class="card-title">System Status</h2>
+                <div id="system-status" class="system-status">
+                    <div class="status-item">
+                        <span class="status-label">STT Engine:</span>
+                        <span class="status-value">Loading...</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Summarization:</span>
+                        <span class="status-value">Loading...</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Audio Mode:</span>
+                        <span class="status-value ready">{{ audio_mode }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Information -->
+            <div class="card">
+                <h2 class="card-title">How It Works</h2>
+                <div class="system-status">
+                    <div class="status-item">
+                        <span>1. Click "Start Meeting & Record"</span>
+                    </div>
+                    <div class="status-item">
+                        <span>2. Grant microphone permission</span>
+                    </div>
+                    <div class="status-item">
+                        <span>3. Speak naturally - transcript appears below</span>
+                    </div>
+                    <div class="status-item">
+                        <span>4. Click "Stop Meeting" when done</span>
+                    </div>
+                    <div class="status-item">
+                        <span>5. View summary and transcript</span>
+                    </div>
+                </div>
+                <p class="text-small text-muted mt-2">
+                    <strong>Note:</strong> This version captures audio from your browser microphone,
+                    not from the server. All processing happens on the server.
+                </p>
+            </div>
+        </div>
+
+        <!-- Real-time Transcript -->
+        <div id="transcript-container" class="transcript-container card">
+            <h2 class="card-title">Real-time Transcript</h2>
+            <div id="transcript-content" class="transcript-content">
+                <!-- Transcript segments will be added here dynamically -->
+            </div>
+        </div>
+
+        <!-- Meeting Summary -->
+        <div id="summary-container" class="summary-container card">
+            <h2 class="card-title">Meeting Summary</h2>
+            <div id="summary-content" class="summary-content">
+                <!-- Summary will be displayed here after meeting ends -->
+            </div>
+        </div>
+
+        <!-- Technical Information -->
+        <div class="card">
+            <h2 class="card-title">Technical Details</h2>
+            <div class="system-status">
+                <div class="status-item">
+                    <span class="status-label">Audio Format:</span>
+                    <span class="status-value">16kHz, Mono, 16-bit PCM</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Protocol:</span>
+                    <span class="status-value">WebSocket (Binary + JSON)</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Browser API:</span>
+                    <span class="status-value">Web Audio API</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Processing:</span>
+                    <span class="status-value">Server-side (Whisper)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Browser Compatibility -->
+        <div class="card">
+            <h2 class="card-title">Browser Compatibility</h2>
+            <p class="text-muted">
+                This application requires a modern browser with Web Audio API support:
+            </p>
+            <ul class="mt-2">
+                <li>Google Chrome 56+ (recommended)</li>
+                <li>Mozilla Firefox 52+</li>
+                <li>Microsoft Edge 79+</li>
+                <li>Safari 14.1+ (macOS/iOS)</li>
+            </ul>
+            <p class="text-small text-muted mt-2">
+                <strong>Note:</strong> You must grant microphone permission when prompted.
+            </p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/static/js/audio-capture.js"></script>
+    <script src="/static/js/websocket-client.js"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

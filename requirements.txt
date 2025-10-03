@@ -1,0 +1,36 @@
+# Core dependencies
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+jinja2==3.1.2
+websockets==12.0
+
+# Audio processing (browser-side capture, server-side processing only)
+# NOTE: PyAudio removed - audio is captured in browser
+pydub==0.25.1
+numpy==1.24.3
+scipy==1.11.3
+
+# Speech-to-Text engines
+openai-whisper==20231117
+SpeechRecognition==3.10.0
+vosk==0.3.45
+
+# AI/LLM engines
+transformers==4.35.2
+torch==2.1.0
+accelerate==0.24.1
+ollama==0.1.7
+
+# Database and storage
+sqlalchemy==2.0.23
+# sqlite3 is built into Python, no need to install
+
+# Utilities
+click==8.1.7
+rich==13.6.0
+python-dotenv==1.0.0
+requests==2.31.0
+aiofiles==23.2.1
+pyyaml==6.0.1
+pydantic==2.5.0

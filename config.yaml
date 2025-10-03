@@ -1,0 +1,83 @@
+# Meeting Assistant Configuration
+app:
+  name: "Meeting Assistant"
+  version: "1.0.0"
+  debug: false
+
+# Server configuration
+server:
+  host: "localhost"
+  port: 8000
+  reload: true
+
+# Audio settings
+audio:
+  sample_rate: 16000
+  channels: 1
+  chunk_size: 1024
+  format: "wav"
+  input_device:   # Auto-detect
+
+# Speech-to-Text models
+stt:
+  default_engine: "whisper"  # Will auto-resolve to whisper-medium
+  engines:
+    whisper:
+      model_size: "medium"  # tiny, base, small, medium, large
+      language: "auto"
+      device: "auto"  # cpu, cuda, mps, or auto-detect
+      use_npu: true  # Enable NPU acceleration if available (RK3588/EIC7700)
+    vosk:
+      model_path: "models/vosk-model-en-us-0.22"
+      language: "en-us"
+    google:
+      api_key: null
+      language: "en-US"
+
+# Summarization models
+summarization:
+  default_engine: "qwen3"  # Will auto-resolve to qwen-Qwen2.5-3B-Instruct
+  engines:
+    qwen3:
+      model_name: "Qwen/Qwen2.5-3B-Instruct"
+      device: "auto"  # cpu, cuda, mps, or auto-detect
+      use_npu: true  # Enable NPU acceleration if available (RK3588/EIC7700)
+      max_tokens: 1000
+      temperature: 0.7
+    ollama:
+      base_url: "http://localhost:11434"
+      model_name: "qwen2.5:1.5b"
+      max_tokens: 1000
+      temperature: 0.7
+    openai:
+      api_key: null
+      model: "gpt-3.5-turbo"
+      max_tokens: 1000
+
+# Storage settings
+storage:
+  data_dir: "./data"
+  meetings_dir: "./data/meetings"
+  models_dir: "./models"
+  database_url: "sqlite:///./data/meetings.db"
+
+# Processing settings
+processing:
+  real_time_stt: true
+  auto_summarize: true
+  speaker_detection: false
+  chunk_duration: 30  # seconds
+  max_meeting_duration: 14400  # 4 hours in seconds
+
+# Hardware acceleration settings
+hardware:
+  auto_detect: true  # Auto-detect hardware capabilities
+  prefer_npu: true  # Prefer NPU over GPU/CPU when available
+  npu_settings:
+    rk3588:
+      enabled: true
+      model_format: "rknn"  # RKNN format for RK3588
+    eic7700:
+      enabled: true
+      model_format: "onnx"  # ONNX with ENNP EP or native ENNP format
+      use_ennp_ep: true  # Use ENNP Execution Provider with ONNX Runtime
