@@ -189,7 +189,7 @@ async def startup_event():
     # Initialize STT manager
     try:
         stt_manager = STTManager(config.stt.to_dict())
-        stt_manager.initialize()
+        # Manager initialization happens in __init__, no separate initialize() call needed
         logger.info("STT Manager initialized successfully")
     except Exception as e:
         logger.error(f"Failed to initialize STT Manager: {e}")
@@ -198,7 +198,7 @@ async def startup_event():
     # Initialize summarization manager
     try:
         summarization_manager = SummarizationManager(config.summarization.to_dict())
-        summarization_manager.initialize()
+        # Manager initialization happens in __init__, no separate initialize() call needed
         logger.info("Summarization Manager initialized successfully")
     except Exception as e:
         logger.error(f"Failed to initialize Summarization Manager: {e}")
@@ -228,8 +228,8 @@ async def shutdown_event():
 async def home(request: Request):
     """Main page"""
     status = {
-        "stt": stt_manager.get_engine_status() if stt_manager else {"initialized": False},
-        "summarization": summarization_manager.get_engine_status() if summarization_manager else {"initialized": False}
+        "stt": stt_manager.get_current_engine_info() if stt_manager else {"initialized": False},
+        "summarization": summarization_manager.get_current_engine_info() if summarization_manager else {"initialized": False}
     }
 
     return templates.TemplateResponse("index.html", {
@@ -244,8 +244,8 @@ async def home(request: Request):
 async def get_status():
     """Get system status"""
     return {
-        "stt": stt_manager.get_engine_status() if stt_manager else {"initialized": False},
-        "summarization": summarization_manager.get_engine_status() if summarization_manager else {"initialized": False},
+        "stt": stt_manager.get_current_engine_info() if stt_manager else {"initialized": False},
+        "summarization": summarization_manager.get_current_engine_info() if summarization_manager else {"initialized": False},
         "active_meetings": len(active_meetings),
         "audio_mode": "browser",
         "available_engines": {

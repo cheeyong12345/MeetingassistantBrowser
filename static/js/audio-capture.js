@@ -242,7 +242,16 @@ class AudioCapture {
             navigator.msGetUserMedia
         );
 
-        return hasAudioContext && (hasMediaDevices || hasLegacyGetUserMedia);
+        const isSupported = hasAudioContext && (hasMediaDevices || hasLegacyGetUserMedia);
+
+        console.log('AudioCapture.isSupported() check:', {
+            hasAudioContext,
+            hasMediaDevices,
+            hasLegacyGetUserMedia,
+            isSupported
+        });
+
+        return isSupported;
     }
 
     /**

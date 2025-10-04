@@ -22,22 +22,33 @@ class MeetingAssistantApp {
      * Initialize the application
      */
     init() {
-        console.log('Initializing Meeting Assistant App');
+        console.log('=== Meeting Assistant App Initialization ===');
+        console.log('Version: 1.0.0 (Browser)');
+        console.log('User Agent:', navigator.userAgent);
+        console.log('Location:', location.href);
 
         // Check browser compatibility
+        const supportInfo = AudioCapture.getSupportInfo();
+        console.log('Browser Support Check:', supportInfo);
+
         if (!AudioCapture.isSupported()) {
-            const supportInfo = AudioCapture.getSupportInfo();
-            console.error('Browser support check failed:', supportInfo);
+            console.error('❌ Browser support check FAILED');
+            console.error('Support Details:', supportInfo);
 
             let errorMessage = 'Your browser does not support required audio features.';
 
             // Provide specific guidance based on the issue
             if (!supportInfo.hasAudioContext) {
+                console.error('Missing: Web Audio API');
                 errorMessage = 'Your browser does not support Web Audio API. Please use Chrome, Firefox, or Edge.';
             } else if (!supportInfo.hasMediaDevices && !supportInfo.isSecureContext) {
+                console.error('Missing: Secure context for getUserMedia');
+                console.error('Current protocol:', supportInfo.protocol);
+                console.error('Current hostname:', supportInfo.hostname);
                 errorMessage = 'Microphone access requires HTTPS or localhost. ' +
                               'Please access via https:// or http://localhost:' + location.port + ' instead of ' + location.protocol + '//' + location.hostname;
             } else if (!supportInfo.hasGetUserMedia) {
+                console.error('Missing: getUserMedia API');
                 errorMessage = 'Your browser does not support microphone access. Please update your browser.';
             }
 
@@ -45,7 +56,7 @@ class MeetingAssistantApp {
             return;
         }
 
-        console.log('Browser compatibility check passed');
+        console.log('✓ Browser compatibility check passed');
 
         // Cache UI elements
         this.cacheElements();
