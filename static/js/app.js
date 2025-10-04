@@ -26,9 +26,26 @@ class MeetingAssistantApp {
 
         // Check browser compatibility
         if (!AudioCapture.isSupported()) {
-            this.showError('Your browser does not support required audio features. Please use Chrome, Firefox, or Edge.');
+            const supportInfo = AudioCapture.getSupportInfo();
+            console.error('Browser support check failed:', supportInfo);
+
+            let errorMessage = 'Your browser does not support required audio features.';
+
+            // Provide specific guidance based on the issue
+            if (!supportInfo.hasAudioContext) {
+                errorMessage = 'Your browser does not support Web Audio API. Please use Chrome, Firefox, or Edge.';
+            } else if (!supportInfo.hasMediaDevices && !supportInfo.isSecureContext) {
+                errorMessage = 'Microphone access requires HTTPS or localhost. ' +
+                              'Please access via https:// or http://localhost:' + location.port + ' instead of ' + location.protocol + '//' + location.hostname;
+            } else if (!supportInfo.hasGetUserMedia) {
+                errorMessage = 'Your browser does not support microphone access. Please update your browser.';
+            }
+
+            this.showError(errorMessage);
             return;
         }
+
+        console.log('Browser compatibility check passed');
 
         // Cache UI elements
         this.cacheElements();

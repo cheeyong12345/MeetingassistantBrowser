@@ -25,8 +25,8 @@ class AudioCapture {
      */
     async initialize() {
         try {
-            // Request microphone permission
-            this.mediaStream = await navigator.mediaDevices.getUserMedia({
+            // Request microphone permission with fallback support
+            this.mediaStream = await this.getUserMedia({
                 audio: {
                     echoCancellation: true,
                     noiseSuppression: true,
@@ -52,6 +52,30 @@ class AudioCapture {
             }
             return false;
         }
+    }
+
+    /**
+     * Get user media with fallback for older browsers
+     */
+    async getUserMedia(constraints) {
+        // Modern API
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            return await navigator.mediaDevices.getUserMedia(constraints);
+        }
+
+        // Legacy API fallback
+        const legacyGetUserMedia = navigator.getUserMedia ||
+                                    navigator.webkitGetUserMedia ||
+                                    navigator.mozGetUserMedia ||
+                                    navigator.msGetUserMedia;
+
+        if (legacyGetUserMedia) {
+            return new Promise((resolve, reject) => {
+                legacyGetUserMedia.call(navigator, constraints, resolve, reject);
+            });
+        }
+
+        throw new Error('getUserMedia is not supported in this browser');
     }
 
     /**
@@ -200,11 +224,50 @@ class AudioCapture {
      * Check if browser supports required APIs
      */
     static isSupported() {
-        return !!(
+        // Check for AudioContext support (all modern browsers)
+        const hasAudioContext = !!(window.AudioContext || window.webkitAudioContext);
+
+        // Check for getUserMedia support
+        // Note: navigator.mediaDevices requires secure context (HTTPS or localhost)
+        const hasMediaDevices = !!(
             navigator.mediaDevices &&
-            navigator.mediaDevices.getUserMedia &&
-            (window.AudioContext || window.webkitAudioContext)
+            navigator.mediaDevices.getUserMedia
         );
+
+        // Fallback: Check for legacy getUserMedia (should work in all contexts)
+        const hasLegacyGetUserMedia = !!(
+            navigator.getUserMedia ||
+            navigator.webkitGetUserMedia ||
+            navigator.mozGetUserMedia ||
+            navigator.msGetUserMedia
+        );
+
+        return hasAudioContext && (hasMediaDevices || hasLegacyGetUserMedia);
+    }
+
+    /**
+     * Check if running in secure context (HTTPS or localhost)
+     */
+    static isSecureContext() {
+        return window.isSecureContext ||
+               location.protocol === 'https:' ||
+               location.hostname === 'localhost' ||
+               location.hostname === '127.0.0.1' ||
+               location.hostname === '[::1]';
+    }
+
+    /**
+     * Get detailed support information for debugging
+     */
+    static getSupportInfo() {
+        return {
+            isSecureContext: AudioCapture.isSecureContext(),
+            hasMediaDevices: !!(navigator.mediaDevices),
+            hasGetUserMedia: !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia),
+            hasAudioContext: !!(window.AudioContext || window.webkitAudioContext),
+            protocol: location.protocol,
+            hostname: location.hostname
+        };
     }
 
     /**
