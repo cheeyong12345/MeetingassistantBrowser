@@ -13,8 +13,8 @@ scipy>=1.11.4  # Updated for Python 3.12 compatibility
 
 # Speech-to-Text engines
 openai-whisper==20231117
-SpeechRecognition==3.10.0
-vosk==0.3.45
+# SpeechRecognition==3.10.0  # Optional - not required for Whisper
+# vosk==0.3.45  # Optional - not available on all platforms, Whisper is primary engine
 
 # AI/LLM engines
 transformers==4.35.2
