@@ -43,3 +43,5 @@ Browser (Client) ←→ WebSocket ←→ FastAPI Server ←→ STT/Summarization
     ↑                                                        ↑
 Web Audio API                                      Whisper/Qwen Engines
 ```
+- push to git hub for every code fix
+- use sub agent for more efficient fix

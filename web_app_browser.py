@@ -19,6 +19,7 @@ try:
     from fastapi.responses import HTMLResponse, JSONResponse
     from fastapi.staticfiles import StaticFiles
     from fastapi.templating import Jinja2Templates
+    from fastapi.middleware.cors import CORSMiddleware
     import uvicorn
     import aiofiles
 
@@ -39,6 +40,15 @@ logger = get_logger(__name__)
 
 # Initialize FastAPI app
 app = FastAPI(title="Meeting Assistant (Browser)", version="1.0.0")
+
+# Configure CORS for remote browser access
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins for local network access
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Static files and templates
 app.mount("/static", StaticFiles(directory="static"), name="static")
